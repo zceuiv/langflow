@@ -9,12 +9,13 @@ services:
     image: langflow-dev
     container_name: langflow-dev
     restart: always
-    ports:
-      - "7860:7860"
-      - "3000:3000"
+    # ports:
+    #   - "7860:7860"
+    #   - "3000:3000"
+    network_mode: host
     environment:
       - PYTHONDONTWRITEBYTECODE=1
-      - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@langflow-pg:5432/langflow
+      - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@localhost:5432/langflow
       - LANGFLOW_SUPERUSER=langflow
       - LANGFLOW_SUPERUSER_PASSWORD=langflow
       - LANGFLOW_CONFIG_DIR=/var/lib/langflow
@@ -24,6 +25,16 @@ services:
       - ./:/app
     depends_on:
       - langflow-pg # Dependência no seu banco de dados existente
+    entrypoint: 
+      - bash 
+      #  cd src/frontend \
+      #  && rm -rf node_modules \
+      #  && npm install --registry=https://registry.npmmirror.com --verbose --canvas_binary_host_mirror=https://registry.npmmirror.com/-/binary/canvas \
+      #  && npm run dev:docker &
+      # poetry install
+      # poetry run uvicorn --factory langflow.main:create_app --host 0.0.0.0 --port 7860 --env-file .env --loop asyncio
+    stdin_open: true
+    tty: true
 
 
   langflow-pg:
@@ -34,8 +45,9 @@ services:
       POSTGRES_USER: langflow
       POSTGRES_PASSWORD: langflow
       POSTGRES_DB: langflow
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
+    network_mode: host
     volumes:
       - ./langflow-pg/data:/var/lib/postgresql/data
 

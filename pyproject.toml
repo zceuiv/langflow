@@ -21,6 +21,11 @@ packages = [{ include = "langflow", from = "src/backend" }]
 include = ["src/backend/langflow/*", "src/backend/langflow/**/*"]
 documentation = "https://docs.langflow.org"
 
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+priority = "primary"
+
 [tool.poetry.scripts]
 langflow = "langflow.__main__:main"
 
